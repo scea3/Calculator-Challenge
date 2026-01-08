@@ -6,14 +6,38 @@ public class InputParser : IInputParser
 
     public ParsedInput Parse(string? input)
     {
-        var raw = input ?? string.Empty;
+        var (delimiters, intputParsed) = ParseHeader(input ?? string.Empty);
 
-        var tokens = Tokenize(raw);
+        var tokens = Tokenize(intputParsed, delimiters);
 
-        return new ParsedInput(DefaultDelimiters, tokens);
+        return new ParsedInput(delimiters, tokens);
     }
 
-    static IReadOnlyList<string> Tokenize(string input)
+    static (HashSet<string> Delimiters, string IntputParsed) ParseHeader(string input)
+    {
+        if (!input.StartsWith("//", StringComparison.Ordinal))
+        {
+            return (DefaultDelimiters, input);
+        }
+
+        var newlineIndex = input.IndexOf('\n');
+        if (newlineIndex < 0)
+        {
+            return (DefaultDelimiters, string.Empty);
+        }
+
+        var header = input[2..newlineIndex];
+        var numbersSection = input[(newlineIndex + 1)..];
+
+        HashSet<string> delimiters = [.. DefaultDelimiters];
+
+        if (header.Length > 0)
+            delimiters.Add(header[0].ToString());
+
+        return (delimiters, numbersSection);
+    }
+
+    static IReadOnlyList<string> Tokenize(string input, HashSet<string> delimiters)
     {
         if (input.Length == 0)
             return [string.Empty];
@@ -21,7 +45,7 @@ public class InputParser : IInputParser
         const char sep = '\u001F';
         var normalized = input;
 
-        foreach (var d in DefaultDelimiters)
+        foreach (var d in delimiters)
         {
             normalized = normalized.Replace(d, sep.ToString(), StringComparison.Ordinal);
         }

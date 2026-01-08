@@ -64,4 +64,13 @@ public class CalculatorServiceTests
         var calc = CreateCalculator(false, 1000);
         Assert.Equal(expected, calc.Add(input));
     }
+
+    [Theory]
+    [InlineData("//#\n2#5", 7)]
+    [InlineData("//,\n2,ff,100", 102)]
+    public void Requirement6_CustomDelimiterStillSupportsPreviousDelimiters(string input, int expected)
+    {
+        var calc = CreateCalculator();
+        Assert.Equal(expected, calc.Add(input));
+    }
 }
