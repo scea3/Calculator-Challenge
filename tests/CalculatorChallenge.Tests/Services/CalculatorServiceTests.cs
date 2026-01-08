@@ -34,4 +34,11 @@ public class CalculatorServiceTests
         var calc = CreateCalculator();
         Assert.Equal(78, calc.Add("1,2,3,4,5,6,7,8,9,10,11,12"));
     }
+
+    [Fact]
+    public void SupportsNewlineDelimiter()
+    {
+        var calc = CreateCalculator();
+        Assert.Equal(6, calc.Add("1\n2,3"));
+    }
 }

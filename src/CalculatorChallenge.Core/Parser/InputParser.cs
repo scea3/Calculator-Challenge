@@ -2,7 +2,7 @@
 
 public class InputParser : IInputParser
 {
-    static readonly HashSet<string> DefaultDelimiters = [","];
+    static readonly HashSet<string> DefaultDelimiters = [",", "\n"];
 
     public ParsedInput Parse(string? input)
     {
