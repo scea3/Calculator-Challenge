@@ -1,8 +1,10 @@
 ﻿using CalculatorChallenge.Core.Parser;
+using CalculatorChallenge.Core.Rules;
 using CalculatorChallenge.Core.Services;
 
 var parser = new InputParser();
-var calc = new CalculatorService(parser);
+var rules = new NumberRules(denyNegatives: true);
+var calc = new CalculatorService(parser, rules);
 
 Console.WriteLine("Enter input string to add (e.g. 1,2)");
 var input = Console.ReadLine();
