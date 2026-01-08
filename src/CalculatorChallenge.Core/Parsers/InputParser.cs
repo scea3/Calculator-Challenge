@@ -1,8 +1,15 @@
-﻿namespace CalculatorChallenge.Core.Parser;
+﻿using CalculatorChallenge.Core.Models;
+
+namespace CalculatorChallenge.Core.Parser;
 
 public class InputParser : IInputParser
 {
-    static readonly HashSet<string> DefaultDelimiters = [",", "\n"];
+    static readonly HashSet<string> _defaultDelimiters = [","];
+
+    public InputParser(string alternateDelimiter = "\n")
+    {
+        _defaultDelimiters.Add(alternateDelimiter);
+    }
 
     public ParsedInput Parse(string? input)
     {
@@ -17,19 +24,19 @@ public class InputParser : IInputParser
     {
         if (!input.StartsWith("//", StringComparison.Ordinal))
         {
-            return (DefaultDelimiters, input);
+            return (_defaultDelimiters, input);
         }
 
         var newlineIndex = input.IndexOf('\n');
         if (newlineIndex < 0)
         {
-            return (DefaultDelimiters, string.Empty);
+            return (_defaultDelimiters, string.Empty);
         }
 
         var header = input[2..newlineIndex];
         var numbersSection = input[(newlineIndex + 1)..];
 
-        HashSet<string> delimiters = [.. DefaultDelimiters];
+        HashSet<string> delimiters = [.. _defaultDelimiters];
 
 
         if (header.StartsWith('['))

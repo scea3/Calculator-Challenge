@@ -1,20 +1,46 @@
-﻿using CalculatorChallenge.Core.Parser;
+﻿using CalculatorChallenge;
+using CalculatorChallenge.Core.Parser;
 using CalculatorChallenge.Core.Rules;
 using CalculatorChallenge.Core.Services;
+using Microsoft.Extensions.DependencyInjection;
 
-var parser = new InputParser();
-var rules = new NumberRules(true, 1000);
-var calc = new CalculatorService(parser, rules);
+var options = AppOptions.Parse(args);
+var services = new ServiceCollection();
 
-Console.WriteLine("Enter input string to add (e.g. 1,2)");
-var input = Console.ReadLine();
+services.AddSingleton<IInputParser>(_ => new InputParser(options.AlternateDelimiter));
+services.AddSingleton<INumberRules>(_ => new NumberRules(options.DenyNegatives, options.UpperBoundInclusive));
+services.AddSingleton<CalculatorService>();
 
-try
+var sp = services.BuildServiceProvider();
+var calc = sp.GetRequiredService<CalculatorService>();
+
+Console.WriteLine("Enter input lines. Press Ctrl+C to exit.");
+
+Console.CancelKeyPress += (_, e) =>
 {
-    var result = calc.Add(input);
-    Console.WriteLine(result);
-}
-catch (Exception ex)
+    e.Cancel = true;
+    Environment.Exit(0);
+};
+
+while (true)
 {
-    Console.WriteLine($"Error: {ex.Message}");
+    var input = Console.ReadLine();
+    if (input is null) continue;
+
+    try
+    {
+        if (options.ShowFormula)
+        {
+            var detailed = calc.AddDetailed(input);
+            Console.WriteLine(detailed.Formula);
+        }
+        else
+        {
+            Console.WriteLine(calc.Add(input));
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error: {ex.Message}");
+    }
 }
