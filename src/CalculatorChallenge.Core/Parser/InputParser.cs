@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace CalculatorChallenge.Core.Parser;
+﻿namespace CalculatorChallenge.Core.Parser;
 
 public class InputParser : IInputParser
 {
@@ -36,9 +34,10 @@ public class InputParser : IInputParser
 
         if (header.StartsWith('['))
         {
-            var closeIndex = header.IndexOf(']',1);
-            if (closeIndex >= 0)
-                delimiters.Add(header[1..closeIndex]);
+            foreach (var d in ExtractBracketDelimiters(header).Where(d => !string.IsNullOrEmpty(d)))
+            {
+                delimiters.Add(d);
+            }
         }
         else
         {
@@ -47,6 +46,25 @@ public class InputParser : IInputParser
         }        
 
         return (delimiters, numbersSection);
+    }
+
+    static IEnumerable<string> ExtractBracketDelimiters(string header)
+    {
+        var i = 0;
+        while (i < header.Length)
+        {
+            if (header[i] != '[')
+            {
+                i++;
+                continue;
+            }
+
+            var close = header.IndexOf(']', i + 1);
+            if (close < 0) yield break;
+
+            yield return header.Substring(i + 1, close - i - 1);
+            i = close + 1;
+        }
     }
 
     static IReadOnlyList<string> Tokenize(string input, HashSet<string> delimiters)
