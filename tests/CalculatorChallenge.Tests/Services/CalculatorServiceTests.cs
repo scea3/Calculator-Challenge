@@ -80,4 +80,11 @@ public class CalculatorServiceTests
         var calc = CreateCalculator();
         Assert.Equal(66, calc.Add("//[***]\n11***22***33"));
     }
+
+    [Fact]
+    public void MultipleDelimitersAnyLength()
+    {
+        var calc = CreateCalculator();
+        Assert.Equal(110, calc.Add("//[*][!!][r9r]\n11r9r22*hh*33!!44"));
+    }
 }
