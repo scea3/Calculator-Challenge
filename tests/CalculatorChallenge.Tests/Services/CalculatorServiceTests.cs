@@ -59,7 +59,7 @@ public class CalculatorServiceTests
     [InlineData("2,1001,6", 8)]
     [InlineData("1000,1", 1001)]
     [InlineData("1002", 0)]
-    public void Requirement5_ValuesGreaterThan1000AreInvalid(string input, int expected)
+    public void ValuesGreaterThan1000AreInvalid(string input, int expected)
     {
         var calc = CreateCalculator(false, 1000);
         Assert.Equal(expected, calc.Add(input));
@@ -68,9 +68,16 @@ public class CalculatorServiceTests
     [Theory]
     [InlineData("//#\n2#5", 7)]
     [InlineData("//,\n2,ff,100", 102)]
-    public void Requirement6_CustomDelimiterStillSupportsPreviousDelimiters(string input, int expected)
+    public void CustomDelimiterStillSupportsPreviousDelimiters(string input, int expected)
     {
         var calc = CreateCalculator();
         Assert.Equal(expected, calc.Add(input));
+    }
+
+    [Fact]
+    public void CustomDelimiterAnyLength()
+    {
+        var calc = CreateCalculator();
+        Assert.Equal(66, calc.Add("//[***]\n11***22***33"));
     }
 }
