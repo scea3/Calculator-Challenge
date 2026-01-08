@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/src/CalculatorChallenge.Core/bin/Debug/net9.0
+/src/CalculatorChallenge.Core/obj
+/.vs
+/src/CalculatorChallenge/bin/Debug/net9.0
+/src/CalculatorChallenge/obj/Debug/net9.0
+/src/CalculatorChallenge/obj
+/tests/CalculatorChallenge.Tests/bin/Debug/net9.0
+/tests/CalculatorChallenge.Tests/obj/Debug/net9.0
+/tests/CalculatorChallenge.Tests/obj
