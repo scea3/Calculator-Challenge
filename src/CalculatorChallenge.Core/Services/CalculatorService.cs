@@ -1,12 +1,10 @@
-﻿using CalculatorChallenge.Core.CustomExceptions;
-using CalculatorChallenge.Core.Parser;
+﻿using CalculatorChallenge.Core.Parser;
 
 namespace CalculatorChallenge.Core.Services;
 
 public class CalculatorService : ICalculatorService
 {
     readonly IInputParser _parser;
-    readonly int MAX_QUANTITY = 2;
 
     public CalculatorService(IInputParser parser)
     {
@@ -16,11 +14,6 @@ public class CalculatorService : ICalculatorService
     public int Add(string? input)
     {
         var parsed = _parser.Parse(input);
-
-        if (parsed.Tokens.Count > MAX_QUANTITY)
-        {
-            throw new QuantityOfNumberNotAllowedException(MAX_QUANTITY);
-        }
 
         var sum = 0;
         for (int i = 0; i < parsed.Tokens.Count; i++)
