@@ -1,4 +1,6 @@
-﻿namespace CalculatorChallenge.Core.Parser;
+﻿using System.Runtime.InteropServices;
+
+namespace CalculatorChallenge.Core.Parser;
 
 public class InputParser : IInputParser
 {
@@ -31,8 +33,18 @@ public class InputParser : IInputParser
 
         HashSet<string> delimiters = [.. DefaultDelimiters];
 
-        if (header.Length > 0)
-            delimiters.Add(header[0].ToString());
+
+        if (header.StartsWith('['))
+        {
+            var closeIndex = header.IndexOf(']',1);
+            if (closeIndex >= 0)
+                delimiters.Add(header[1..closeIndex]);
+        }
+        else
+        {
+            if (header.Length > 0)
+                delimiters.Add(header[0].ToString());
+        }        
 
         return (delimiters, numbersSection);
     }
