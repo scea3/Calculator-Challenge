@@ -3,7 +3,7 @@ using CalculatorChallenge.Core.Rules;
 using CalculatorChallenge.Core.Services;
 
 var parser = new InputParser();
-var rules = new NumberRules(denyNegatives: true);
+var rules = new NumberRules(true, 1000);
 var calc = new CalculatorService(parser, rules);
 
 Console.WriteLine("Enter input string to add (e.g. 1,2)");
