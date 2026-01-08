@@ -1,14 +1,17 @@
-﻿using CalculatorChallenge.Core.Parser;
+﻿using CalculatorChallenge.Core.CustomExceptions;
+using CalculatorChallenge.Core.Parser;
+using CalculatorChallenge.Core.Rules;
 using CalculatorChallenge.Core.Services;
 
 namespace CalculatorChallenge.Tests.Services;
 
 public class CalculatorServiceTests
 {
-    private static CalculatorService CreateCalculator()
+    private static CalculatorService CreateCalculator(bool denyNegatives = false)
     {
         return new CalculatorService(
-            new InputParser()
+            new InputParser(),
+            new NumberRules(denyNegatives)
         );
     }
 
@@ -40,5 +43,15 @@ public class CalculatorServiceTests
     {
         var calc = CreateCalculator();
         Assert.Equal(6, calc.Add("1\n2,3"));
+    }
+
+    [Fact]
+    public void DeniesNegatives_IncludesAllNegativesInMessage()
+    {
+        var calc = CreateCalculator(denyNegatives: true);
+
+        var ex = Assert.Throws<NegativeNumbersNotAllowedException>(() => calc.Add("1,-2,-3,4"));
+        Assert.Contains("-2", ex.Message);
+        Assert.Contains("-3", ex.Message);
     }
 }
