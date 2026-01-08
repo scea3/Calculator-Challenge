@@ -162,11 +162,11 @@ Supported operations:
 - Division (with divide-by-zero protection)
 
 Each operation implements:
-```csharp
-ICalculatorOperation
+
+`ICalculatorOperation`
 
 
-🧪 Unit Testing
+## 🧪 Unit Testing
 
 Framework: xUnit
 
