@@ -7,11 +7,11 @@ namespace CalculatorChallenge.Tests.Services;
 
 public class CalculatorServiceTests
 {
-    private static CalculatorService CreateCalculator(bool denyNegatives = false)
+    private static CalculatorService CreateCalculator(bool denyNegatives = false, int upperBoundInclusive = 1000)
     {
         return new CalculatorService(
             new InputParser(),
-            new NumberRules(denyNegatives)
+            new NumberRules(denyNegatives, upperBoundInclusive)
         );
     }
 
@@ -27,7 +27,7 @@ public class CalculatorServiceTests
     [InlineData("4,-3", 1)]
     public void BaseCases(string? input, int expected)
     {
-        var calc = CreateCalculator();
+        var calc = CreateCalculator(upperBoundInclusive: 5000);
         Assert.Equal(expected, calc.Add(input));
     }
 
@@ -48,10 +48,20 @@ public class CalculatorServiceTests
     [Fact]
     public void DeniesNegatives_IncludesAllNegativesInMessage()
     {
-        var calc = CreateCalculator(denyNegatives: true);
+        var calc = CreateCalculator(true);
 
         var ex = Assert.Throws<NegativeNumbersNotAllowedException>(() => calc.Add("1,-2,-3,4"));
         Assert.Contains("-2", ex.Message);
         Assert.Contains("-3", ex.Message);
+    }
+
+    [Theory]
+    [InlineData("2,1001,6", 8)]
+    [InlineData("1000,1", 1001)]
+    [InlineData("1002", 0)]
+    public void Requirement5_ValuesGreaterThan1000AreInvalid(string input, int expected)
+    {
+        var calc = CreateCalculator(false, 1000);
+        Assert.Equal(expected, calc.Add(input));
     }
 }

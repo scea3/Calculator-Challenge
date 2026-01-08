@@ -4,11 +4,13 @@ namespace CalculatorChallenge.Core.Rules;
 
 public class NumberRules : INumberRules
 {
-    public bool DenyNegatives { get; }
+    public readonly bool DenyNegatives;
+    public readonly int UpperBoundInclusive;
 
-    public NumberRules(bool denyNegatives = true)
+    public NumberRules(bool denyNegatives = true, int upperBoundInclusive = 1000)
     {
         DenyNegatives = denyNegatives;
+        UpperBoundInclusive = upperBoundInclusive;
     }
 
     public int[] Apply(int[] numbers)
@@ -26,6 +28,13 @@ public class NumberRules : INumberRules
                 throw new NegativeNumbersNotAllowedException(negatives);
         }
 
-        return numbers;
+        var result = new int[numbers.Length];
+        for (int i = 0; i < numbers.Length; i++)
+        {
+            var n = numbers[i];
+            result[i] = (n > UpperBoundInclusive) ? 0 : n;
+        }
+
+        return result;
     }
 }
